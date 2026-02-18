@@ -4,3 +4,4 @@ pillow
 gunicorn
 numpy
 matplotlib
+opencv-python
