@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{% block receiver_title %}Receiver - ECC Steganography{% endblock %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Receiver Header -->
+    <div class="row bg-success py-3">
+        <div class="col-12">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="text-white mb-0">
+                            <i class="fas fa-download me-2"></i>
+                            Receiver Operations
+                        </h2>
+                        <p class="text-white mb-0 opacity-75">Extract and decrypt hidden data securely</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="{{ url_for('receiver_dashboard') }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-tachometer-alt me-1"></i> Receiver Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receiver Navigation -->
+    <div class="row bg-light py-2 shadow-sm">
+        <div class="col-12">
+            <div class="container">
+                <nav class="nav nav-pills">
+                    <a class="nav-link {% if request.endpoint == 'receiver_dashboard' %}active{% endif %}" 
+                       href="{{ url_for('receiver_dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'receiver_text_image' %}active{% endif %}" 
+                       href="{{ url_for('receiver_text_image') }}">
+                        <i class="fas fa-font me-1"></i> Extract Text
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'receiver_image_image' %}active{% endif %}" 
+                       href="{{ url_for('receiver_image_image') }}">
+                        <i class="fas fa-image me-1"></i> Extract Image
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'receiver_video' %}active{% endif %}" 
+                       href="{{ url_for('receiver_video') }}">
+                        <i class="fas fa-video me-1"></i> Extract Video
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receiver Content -->
+    <div class="container-fluid py-4">
+        {% block receiver_content %}{% endblock %}
+    </div>
+</div>
+
+<style>
+.nav-pills .nav-link {
+    color: var(--secondary-color);
+    border-radius: 20px;
+    margin-right: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.nav-pills .nav-link.active {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+</style>
+{% endblock %}

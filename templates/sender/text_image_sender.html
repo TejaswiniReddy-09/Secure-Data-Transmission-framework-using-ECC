@@ -1,0 +1,124 @@
+{% extends "sender/sender_base.html" %}
+
+{% block title %}Hide Text in Image - Sender{% endblock %}
+
+{% block sender_content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="dashboard-header text-center mb-4">
+                <h1 class="display-5"><i class="fas fa-font text-warning"></i> Hide Text in Image</h1>
+                <p class="lead">Encrypt and hide text messages inside images</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-lock text-warning"></i> Encryption Form</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="encryptionForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Cover Image</label>
+                                    <input type="file" class="form-control" name="cover_image" accept=".png,.jpg,.jpeg,.bmp" required>
+                                    <div class="form-text">Select the image to hide your text in</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Secret Text</label>
+                                    <textarea class="form-control" name="secret_text" rows="5" placeholder="Enter your secret message here..." required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Receiver's Public Key</label>
+                                    <textarea class="form-control" name="receiver_public_key" rows="4" placeholder="Paste receiver's public key here..." required></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Encryption Algorithm</label>
+                                    <select class="form-select" name="algorithm" required>
+                                        <option value="curve25519">Curve25519 (Faster)</option>
+                                        <option value="secp256r1">SECP256R1 (More Secure)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-warning btn-lg">
+                                        <i class="fas fa-shield-alt"></i> Encrypt & Hide Text
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if stego_image %}
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-image text-warning"></i> Original Image</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('uploaded_sender_file', filename=cover_image) }}" class="img-fluid rounded" style="max-height: 300px;">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-eye-slash text-warning"></i> Stego Image</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('uploaded_sender_file', filename=stego_image) }}" class="img-fluid rounded" style="max-height: 300px;">
+                    <div class="mt-3">
+                        <p><strong>Encryption Time:</strong> {{ "%.4f"|format(enc_time) }} seconds</p>
+                        <p><strong>Algorithm:</strong> {{ algorithm|upper }}</p>
+                        <a href="{{ url_for('uploaded_sender_file', filename=stego_image) }}" download class="btn btn-outline-warning">
+                            <i class="fas fa-download"></i> Download Stego Image
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Information Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-info-circle text-warning"></i> About Text in Image Steganography</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5><i class="fas fa-shield-alt text-warning"></i> Security</h5>
+                            <p>Your text is encrypted using ECC before being hidden in the image, providing military-grade security.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5><i class="fas fa-eye text-warning"></i> Stealth</h5>
+                            <p>The hidden data is imperceptible to human eyes and maintains the original image quality.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5><i class="fas fa-bolt text-warning"></i> Performance</h5>
+                            <p>Choose between Curve25519 for speed or SECP256R1 for enhanced security based on your needs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

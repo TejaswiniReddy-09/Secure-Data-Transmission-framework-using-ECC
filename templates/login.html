@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Login - ECC Steganography{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card custom-card">
+                <div class="card-header text-center">
+                    <h3><i class="fas fa-sign-in-alt text-warning"></i> Login</h3>
+                    <p class="mb-0">Access your ECC Steganography account</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('login') }}">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" required 
+                                       placeholder="Enter your username">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required 
+                                       placeholder="Enter your password">
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Don't have an account? 
+                            <a href="{{ url_for('register') }}" class="text-warning text-decoration-none fw-bold">
+                                Register here
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Overview -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card custom-card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Why Use ECC Steganography?</h5>
+                            <div class="row mt-3">
+                                <div class="col-4">
+                                    <i class="fas fa-shield-alt text-warning fa-2x mb-2"></i>
+                                    <p class="small mb-0">Secure</p>
+                                </div>
+                                <div class="col-4">
+                                    <i class="fas fa-bolt text-warning fa-2x mb-2"></i>
+                                    <p class="small mb-0">Fast</p>
+                                </div>
+                                <div class="col-4">
+                                    <i class="fas fa-eye-slash text-warning fa-2x mb-2"></i>
+                                    <p class="small mb-0">Stealthy</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.container-fluid {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+</style>
+{% endblock %}

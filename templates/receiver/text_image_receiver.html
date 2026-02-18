@@ -1,0 +1,161 @@
+{% extends "receiver/receiver_base.html" %}
+
+{% block receiver_title %}Extract Text from Image - Receiver{% endblock %}
+
+{% block receiver_content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="dashboard-header text-center mb-4">
+                <h1 class="display-5"><i class="fas fa-font text-success"></i> Extract Text from Image</h1>
+                <p class="lead">Extract and decrypt hidden text messages from stego images</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-unlock text-success"></i> Extraction Form</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="extractionForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Stego Image</label>
+                                    <input type="file" class="form-control" name="stego_image" accept=".png,.jpg,.jpeg,.bmp" required>
+                                    <div class="form-text">Select the image containing hidden text</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Encryption Algorithm</label>
+                                    <select class="form-select" name="algorithm" required>
+                                        <option value="curve25519">Curve25519</option>
+                                        <option value="secp256r1">SECP256R1</option>
+                                    </select>
+                                    <div class="form-text">Select the algorithm used for encryption</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Your Private Key</label>
+                                    <textarea class="form-control" name="private_key" rows="6" placeholder="Paste your private key here..." required></textarea>
+                                    <div class="form-text">The private key corresponding to the public key used for encryption</div>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="fas fa-unlock"></i> Extract & Decrypt Text
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if extracted_text %}
+    <div class="row mt-4">
+        <div class="col-md-6 mx-auto">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-file-alt text-success"></i> Extracted Text</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Decrypted Message</label>
+                        <textarea class="form-control" rows="6" readonly>{{ extracted_text }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <p><strong>Decryption Time:</strong> {{ "%.4f"|format(dec_time) }} seconds</p>
+                        </div>
+                        <div class="col-6">
+                            <p><strong>Algorithm:</strong> {{ algorithm|upper }}</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-success" onclick="copyExtractedText()">
+                        <i class="fas fa-copy"></i> Copy Text
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-image text-success"></i> Stego Image</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('uploaded_receiver_file', filename=stego_image) }}" class="img-fluid rounded" style="max-height: 300px;">
+                    <p class="mt-2 mb-0"><small>This image contains the hidden encrypted text</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- How It Works -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-info-circle text-success"></i> Text Extraction Process</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-download text-success fa-2x mb-3"></i>
+                            <h5>1. Load Stego Image</h5>
+                            <p>The system reads the stego image containing hidden data</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-code text-success fa-2x mb-3"></i>
+                            <h5>2. Extract Bits</h5>
+                            <p>LSB extraction retrieves the encrypted data from pixel values</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-key text-success fa-2x mb-3"></i>
+                            <h5>3. Decrypt Data</h5>
+                            <p>ECC decryption using your private key reveals the original text</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-check-circle text-success fa-2x mb-3"></i>
+                            <h5>4. Display Text</h5>
+                            <p>The decrypted text is displayed securely</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyExtractedText() {
+    const textarea = document.querySelector('textarea[readonly]');
+    if (textarea && textarea.value.trim() !== '') {
+        textarea.select();
+        document.execCommand('copy');
+        alert('Extracted text copied to clipboard!');
+    } else {
+        alert('No extracted text available to copy.');
+    }
+}
+
+// Add form validation
+document.getElementById('extractionForm').addEventListener('submit', function(e) {
+    const privateKey = document.querySelector('textarea[name="private_key"]');
+    if (privateKey.value.trim() === '') {
+        e.preventDefault();
+        alert('Please enter your private key.');
+        privateKey.focus();
+    }
+});
+</script>
+{% endblock %}

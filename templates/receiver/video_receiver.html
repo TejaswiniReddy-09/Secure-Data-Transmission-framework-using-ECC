@@ -1,0 +1,208 @@
+{% extends "receiver/receiver_base.html" %}
+
+{% block receiver_title %}Extract Video from Video - Receiver{% endblock %}
+
+{% block receiver_content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="dashboard-header text-center mb-4">
+                <h1 class="display-5"><i class="fas fa-video text-success"></i> Extract Video from Video</h1>
+                <p class="lead">Extract and decrypt hidden videos from stego videos</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-unlock text-success"></i> Video Extraction Form</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="extractionForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Stego Video</label>
+                                    <input type="file" class="form-control" name="stego_video" accept=".mp4,.avi,.mov,.mkv" required>
+                                    <div class="form-text">Select the video containing hidden video data</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Encryption Algorithm</label>
+                                    <select class="form-select" name="algorithm" required>
+                                        <option value="curve25519">Curve25519</option>
+                                        <option value="secp256r1">SECP256R1</option>
+                                    </select>
+                                    <div class="form-text">Select the algorithm used for encryption</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Your Private Key</label>
+                                    <textarea class="form-control" name="private_key" rows="6" placeholder="Paste your private key here..." required></textarea>
+                                    <div class="form-text">The private key corresponding to the public key used for encryption</div>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="fas fa-unlock"></i> Extract & Decrypt Video
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if extracted_video %}
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-eye-slash text-success"></i> Stego Video</h5>
+                </div>
+                <div class="card-body text-center">
+                    <video controls class="w-100 rounded" style="max-height: 300px;">
+                        <source src="{{ url_for('uploaded_receiver_file', filename=stego_video) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <p class="mt-2 mb-0"><small>This video contains a hidden encrypted video</small></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-video text-success"></i> Extracted Video</h5>
+                </div>
+                <div class="card-body text-center">
+                    <video controls class="w-100 rounded" style="max-height: 300px;">
+                        <source src="{{ url_for('uploaded_receiver_file', filename=extracted_video) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="mt-3">
+                        <p><strong>Decryption Time:</strong> {{ "%.4f"|format(dec_time) }} seconds</p>
+                        <p><strong>Algorithm:</strong> {{ algorithm|upper }}</p>
+                        <a href="{{ url_for('uploaded_receiver_file', filename=extracted_video) }}" download class="btn btn-outline-success">
+                            <i class="fas fa-download"></i> Download Extracted Video
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Video Steganography Info -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-info-circle text-success"></i> Video Steganography Process</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-film text-success fa-2x mb-3"></i>
+                            <h5>Frame Processing</h5>
+                            <p>Each video frame is processed individually to extract hidden data bits</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-code text-success fa-2x mb-3"></i>
+                            <h5>Data Reconstruction</h5>
+                            <p>Extracted bits are reassembled into the encrypted video data</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-key text-success fa-2x mb-3"></i>
+                            <h5>ECC Decryption</h5>
+                            <p>Your private key decrypts the video data securely</p>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <i class="fas fa-play-circle text-success fa-2x mb-3"></i>
+                            <h5>Video Restoration</h5>
+                            <p>The original video is reconstructed and made available for playback</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supported Formats -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-check-circle text-success"></i> Supported Video Formats</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-2 col-4 mb-3">
+                            <i class="fas fa-file-video fa-2x text-success mb-2"></i>
+                            <p class="mb-0">MP4</p>
+                        </div>
+                        <div class="col-md-2 col-4 mb-3">
+                            <i class="fas fa-file-video fa-2x text-success mb-2"></i>
+                            <p class="mb-0">AVI</p>
+                        </div>
+                        <div class="col-md-2 col-4 mb-3">
+                            <i class="fas fa-file-video fa-2x text-success mb-2"></i>
+                            <p class="mb-0">MOV</p>
+                        </div>
+                        <div class="col-md-2 col-4 mb-3">
+                            <i class="fas fa-file-video fa-2x text-success mb-2"></i>
+                            <p class="mb-0">MKV</p>
+                        </div>
+                        <div class="col-md-2 col-4 mb-3">
+                            <i class="fas fa-file-video fa-2x text-success mb-2"></i>
+                            <p class="mb-0">WebM</p>
+                        </div>
+                        <div class="col-md-2 col-4 mb-3">
+                            <i class="fas fa-file-video fa-2x text-success mb-2"></i>
+                            <p class="mb-0">WMV</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add form validation
+document.getElementById('extractionForm').addEventListener('submit', function(e) {
+    const privateKey = document.querySelector('textarea[name="private_key"]');
+    const fileInput = document.querySelector('input[type="file"]');
+    
+    if (privateKey.value.trim() === '') {
+        e.preventDefault();
+        alert('Please enter your private key.');
+        privateKey.focus();
+        return;
+    }
+    
+    if (fileInput.files.length === 0) {
+        e.preventDefault();
+        alert('Please select a stego video file.');
+        fileInput.focus();
+    }
+});
+
+// Add file size warning for large videos
+document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const fileSizeMB = file.size / (1024 * 1024);
+        if (fileSizeMB > 50) {
+            alert('Warning: Large video file selected (' + fileSizeMB.toFixed(2) + ' MB). Extraction may take longer.');
+        }
+    }
+});
+</script>
+{% endblock %}

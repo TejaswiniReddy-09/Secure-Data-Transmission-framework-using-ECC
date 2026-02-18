@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}ECC Steganography - Secure Data Hiding{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Hero Section -->
+    <div class="row hero-section align-items-center min-vh-100">
+        <div class="col-lg-6 mx-auto text-center text-white">
+            <h1 class="display-3 fw-bold mb-4">
+                <i class="fas fa-shield-alt"></i><br>
+                ECC Steganography
+            </h1>
+            <p class="lead mb-4">
+                Advanced secure data hiding using Elliptic Curve Cryptography and Steganography
+            </p>
+            <p class="mb-5">
+                Hide your secret messages, images, and videos securely within other media files 
+                using military-grade encryption and undetectable steganography techniques.
+            </p>
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                {% if 'username' in session %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-warning btn-lg px-4 gap-3">
+                        <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('register') }}" class="btn btn-warning btn-lg px-4 gap-3">
+                        <i class="fas fa-user-plus"></i> Get Started
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row py-5 bg-light">
+        <div class="col-lg-8 mx-auto">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold text-dark">Powerful Features</h2>
+                <p class="lead text-muted">Advanced security meets seamless usability</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card custom-card h-100 text-center">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3">
+                                <i class="fas fa-lock fa-2x"></i>
+                            </div>
+                            <h4 class="card-title">Military-Grade Encryption</h4>
+                            <p class="card-text">ECC Curve25519 and SECP256R1 algorithms for maximum security</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card custom-card h-100 text-center">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3">
+                                <i class="fas fa-eye-slash fa-2x"></i>
+                            </div>
+                            <h4 class="card-title">Undetectable Hiding</h4>
+                            <p class="card-text">LSB steganography that preserves media quality perfectly</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card custom-card h-100 text-center">
+                        <div class="card-body">
+                            <div class="feature-icon mb-3">
+                                <i class="fas fa-bolt fa-2x"></i>
+                            </div>
+                            <h4 class="card-title">High Performance</h4>
+                            <p class="card-text">Fast encryption and decryption with minimal overhead</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="row py-5 text-white">
+        <div class="col-lg-8 mx-auto">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">How It Works</h2>
+                <p class="lead">Three simple steps to secure communication</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4 text-center">
+                    <div class="step-number">1</div>
+                    <h4>Generate Keys</h4>
+                    <p>Create your ECC key pair and share your public key</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="step-number">2</div>
+                    <h4>Encrypt & Hide</h4>
+                    <p>Encrypt your data and hide it in cover media</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="step-number">3</div>
+                    <h4>Extract & Decrypt</h4>
+                    <p>Recipient extracts and decrypts using their private key</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="row py-5 bg-warning">
+        <div class="col-lg-6 mx-auto text-center">
+            <h2 class="display-6 fw-bold text-white mb-4">Ready to Secure Your Data?</h2>
+            <p class="lead text-white mb-4">Join thousands of users who trust our ECC Steganography platform</p>
+            {% if not 'username' in session %}
+            <a href="{{ url_for('register') }}" class="btn btn-light btn-lg px-5">
+                <i class="fas fa-rocket"></i> Start Free Today
+            </a>
+            {% else %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-light btn-lg px-5">
+                <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.9), rgba(116, 75, 162, 0.9)),
+                url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-position: center;
+}
+
+.step-number {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 auto 20px;
+}
+</style>
+{% endblock %}

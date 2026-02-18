@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{% block sender_title %}Sender - ECC Steganography{% endblock %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Sender Header -->
+    <div class="row bg-warning py-3">
+        <div class="col-12">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="text-white mb-0">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            Sender Operations
+                        </h2>
+                        <p class="text-white mb-0 opacity-75">Encrypt and hide your secret data securely</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="{{ url_for('sender_dashboard') }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-tachometer-alt me-1"></i> Sender Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sender Navigation -->
+    <div class="row bg-light py-2 shadow-sm">
+        <div class="col-12">
+            <div class="container">
+                <nav class="nav nav-pills">
+                    <a class="nav-link {% if request.endpoint == 'sender_dashboard' %}active{% endif %}" 
+                       href="{{ url_for('sender_dashboard') }}">
+                        <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'sender_text_image' %}active{% endif %}" 
+                       href="{{ url_for('sender_text_image') }}">
+                        <i class="fas fa-font me-1"></i> Text in Image
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'sender_image_image' %}active{% endif %}" 
+                       href="{{ url_for('sender_image_image') }}">
+                        <i class="fas fa-image me-1"></i> Image in Image
+                    </a>
+                    <a class="nav-link {% if request.endpoint == 'sender_video' %}active{% endif %}" 
+                       href="{{ url_for('sender_video') }}">
+                        <i class="fas fa-video me-1"></i> Video Steganography
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sender Content -->
+    <div class="container-fluid py-4">
+        {% block sender_content %}{% endblock %}
+    </div>
+</div>
+
+<style>
+.nav-pills .nav-link {
+    color: var(--secondary-color);
+    border-radius: 20px;
+    margin-right: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: rgba(255, 107, 53, 0.1);
+    color: var(--primary-color);
+}
+
+.nav-pills .nav-link.active {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+}
+</style>
+{% endblock %}

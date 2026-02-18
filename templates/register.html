@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Register - ECC Steganography{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card custom-card">
+                <div class="card-header text-center">
+                    <h3><i class="fas fa-user-plus text-warning"></i> Create Account</h3>
+                    <p class="mb-0">Join ECC Steganography today</p>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="username" name="username" required 
+                                       placeholder="Choose a username" minlength="3">
+                            </div>
+                            <div class="form-text">Minimum 3 characters</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" name="email" required 
+                                       placeholder="Enter your email">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="password" name="password" required 
+                                       placeholder="Create a password" minlength="6">
+                            </div>
+                            <div class="form-text">Minimum 6 characters</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="confirmPassword" required 
+                                       placeholder="Confirm your password">
+                            </div>
+                            <div id="passwordMatch" class="form-text"></div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Already have an account? 
+                            <a href="{{ url_for('login') }}" class="text-warning text-decoration-none fw-bold">
+                                Login here
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Benefits -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card custom-card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Benefits of Registration</h5>
+                            <ul class="list-unstyled mt-3">
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Unlimited steganography operations</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Secure key management</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Performance analytics</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Multiple algorithm support</li>
+                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Priority support</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const passwordMatch = document.getElementById('passwordMatch');
+    
+    function validatePassword() {
+        if (password.value !== confirmPassword.value) {
+            passwordMatch.innerHTML = '<i class="fas fa-times text-danger"></i> Passwords do not match';
+            confirmPassword.classList.add('is-invalid');
+            confirmPassword.classList.remove('is-valid');
+        } else if (password.value.length >= 6) {
+            passwordMatch.innerHTML = '<i class="fas fa-check text-success"></i> Passwords match';
+            confirmPassword.classList.add('is-valid');
+            confirmPassword.classList.remove('is-invalid');
+        } else {
+            passwordMatch.innerHTML = 'Passwords must be at least 6 characters';
+            confirmPassword.classList.remove('is-valid', 'is-invalid');
+        }
+    }
+    
+    password.addEventListener('input', validatePassword);
+    confirmPassword.addEventListener('input', validatePassword);
+    
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        if (password.value !== confirmPassword.value) {
+            e.preventDefault();
+            alert('Passwords do not match. Please check your password confirmation.');
+        }
+    });
+});
+</script>
+
+<style>
+.container-fluid {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.is-valid {
+    border-color: #198754 !important;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+</style>
+{% endblock %}

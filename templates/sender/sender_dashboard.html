@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Sender Dashboard - ECC Steganography{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="dashboard-header text-center mb-5">
+                <h1 class="display-4"><i class="fas fa-paper-plane text-warning"></i> Sender Dashboard</h1>
+                <p class="lead">Encrypt and hide your secret data securely</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Management Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-key text-warning"></i> Key Management</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Select Algorithm</label>
+                                <select class="form-select" id="algorithmSelect">
+                                    <option value="curve25519">Curve25519</option>
+                                    <option value="secp256r1">SECP256R1</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-warning btn-lg" onclick="generateKeys()">
+                                <i class="fas fa-key"></i> Generate Key Pair
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Your Public Key</label>
+                                <textarea class="form-control" id="publicKey" rows="3" readonly placeholder="Public key will appear here..."></textarea>
+                                <button class="btn btn-outline-warning btn-sm mt-2" onclick="copyPublicKey()">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Your Private Key</label>
+                                <textarea class="form-control" id="privateKey" rows="3" readonly placeholder="Private key will appear here..."></textarea>
+                                <button class="btn btn-outline-warning btn-sm mt-2" onclick="copyPrivateKey()">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Steganography Options -->
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card custom-card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-font fa-3x text-warning"></i>
+                    </div>
+                    <h4 class="card-title">Text in Image</h4>
+                    <p class="card-text">Hide encrypted text messages inside images using ECC encryption</p>
+                    <ul class="list-unstyled text-start">
+                        <li><i class="fas fa-check text-success"></i> Secure ECC encryption</li>
+                        <li><i class="fas fa-check text-success"></i> LSB steganography</li>
+                        <li><i class="fas fa-check text-success"></i> Multiple algorithms</li>
+                    </ul>
+                    <a href="{{ url_for('sender_text_image') }}" class="btn btn-warning btn-lg">
+                        <i class="fas fa-rocket"></i> Start Hiding Text
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card custom-card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-image fa-3x text-warning"></i>
+                    </div>
+                    <h4 class="card-title">Image in Image</h4>
+                    <p class="card-text">Hide encrypted images inside other images with high security</p>
+                    <ul class="list-unstyled text-start">
+                        <li><i class="fas fa-check text-success"></i> Image encryption</li>
+                        <li><i class="fas fa-check text-success"></i> High capacity</li>
+                        <li><i class="fas fa-check text-success"></i> Visual quality preservation</li>
+                    </ul>
+                    <a href="{{ url_for('sender_image_image') }}" class="btn btn-warning btn-lg">
+                        <i class="fas fa-rocket"></i> Start Hiding Images
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card custom-card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-video fa-3x text-warning"></i>
+                    </div>
+                    <h4 class="card-title">Video Steganography</h4>
+                    <p class="card-text">Hide encrypted videos inside other videos using frame-based embedding</p>
+                    <ul class="list-unstyled text-start">
+                        <li><i class="fas fa-check text-success"></i> Video encryption</li>
+                        <li><i class="fas fa-check text-success"></i> Frame-based hiding</li>
+                        <li><i class="fas fa-check text-success"></i> Large capacity</li>
+                    </ul>
+                    <a href="{{ url_for('sender_video') }}" class="btn btn-warning btn-lg">
+                        <i class="fas fa-rocket"></i> Start Hiding Videos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Information Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-info-circle text-warning"></i> How It Works</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5><i class="fas fa-key text-warning"></i> 1. Generate Keys</h5>
+                            <p>Create your ECC key pair using Curve25519 or SECP256R1 algorithms</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5><i class="fas fa-lock text-warning"></i> 2. Encrypt Data</h5>
+                            <p>Encrypt your secret data using the receiver's public key</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5><i class="fas fa-eye-slash text-warning"></i> 3. Hide Data</h5>
+                            <p>Embed the encrypted data into cover media using steganography</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function generateKeys() {
+    const algorithm = document.getElementById('algorithmSelect').value;
+    const button = event.target;
+    const originalText = button.innerHTML;
+    
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+    button.disabled = true;
+    
+    fetch('/generate_keys', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({algorithm: algorithm})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error: ' + data.error);
+        } else {
+            document.getElementById('publicKey').value = data.public_key;
+            document.getElementById('privateKey').value = data.private_key;
+            alert('Keys generated successfully using ' + algorithm);
+        }
+    })
+    .catch(error => {
+        alert('Error generating keys: ' + error);
+    })
+    .finally(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+function copyPublicKey() {
+    const publicKey = document.getElementById('publicKey');
+    publicKey.select();
+    document.execCommand('copy');
+    alert('Public key copied to clipboard!');
+}
+
+function copyPrivateKey() {
+    const privateKey = document.getElementById('privateKey');
+    privateKey.select();
+    document.execCommand('copy');
+    alert('Private key copied to clipboard!');
+}
+</script>
+{% endblock %}

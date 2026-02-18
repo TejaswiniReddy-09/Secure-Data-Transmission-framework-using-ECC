@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - ECC Steganography{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Welcome Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="dashboard-header text-center">
+                <h1 class="display-4"><i class="fas fa-tachometer-alt text-warning"></i> Dashboard</h1>
+                <p class="lead text-white">Welcome back, {{ session['username'] }}! Ready to secure your data?</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-5">
+        <div class="col-md-3 mb-4">
+            <div class="card custom-card text-center">
+                <div class="card-body">
+                    <div class="text-warning mb-3">
+                        <i class="fas fa-shield-alt fa-3x"></i>
+                    </div>
+                    <h3 class="card-title">ECC Security</h3>
+                    <p class="card-text">Military-grade encryption using Elliptic Curve Cryptography</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card custom-card text-center">
+                <div class="card-body">
+                    <div class="text-warning mb-3">
+                        <i class="fas fa-eye-slash fa-3x"></i>
+                    </div>
+                    <h3 class="card-title">Stealth Mode</h3>
+                    <p class="card-text">Undetectable data hiding in images and videos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card custom-card text-center">
+                <div class="card-body">
+                    <div class="text-warning mb-3">
+                        <i class="fas fa-bolt fa-3x"></i>
+                    </div>
+                    <h3 class="card-title">High Speed</h3>
+                    <p class="card-text">Fast encryption and decryption processes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card custom-card text-center">
+                <div class="card-body">
+                    <div class="text-warning mb-3">
+                        <i class="fas fa-algorithm fa-3x"></i>
+                    </div>
+                    <h3 class="card-title">Dual Algorithms</h3>
+                    <p class="card-text">Curve25519 and SECP256R1 support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Actions -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card custom-card h-100">
+                <div class="card-header">
+                    <h4><i class="fas fa-paper-plane text-warning"></i> Sender Operations</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Encrypt and hide your secret data in various media files.</p>
+                    <div class="list-group">
+                        <a href="{{ url_for('sender_text_image') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-font text-warning me-2"></i>
+                            Hide Text in Image
+                        </a>
+                        <a href="{{ url_for('sender_image_image') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-image text-warning me-2"></i>
+                            Hide Image in Image
+                        </a>
+                        <a href="{{ url_for('sender_video') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-video text-warning me-2"></i>
+                            Hide Video in Video
+                        </a>
+                    </div>
+                    <div class="d-grid mt-3">
+                        <a href="{{ url_for('sender_dashboard') }}" class="btn btn-warning">
+                            <i class="fas fa-rocket me-2"></i>Go to Sender Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card custom-card h-100">
+                <div class="card-header">
+                    <h4><i class="fas fa-download text-warning"></i> Receiver Operations</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Extract and decrypt hidden data from stego media files.</p>
+                    <div class="list-group">
+                        <a href="{{ url_for('receiver_text_image') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-font text-warning me-2"></i>
+                            Extract Text from Image
+                        </a>
+                        <a href="{{ url_for('receiver_image_image') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-image text-warning me-2"></i>
+                            Extract Image from Image
+                        </a>
+                        <a href="{{ url_for('receiver_video') }}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-video text-warning me-2"></i>
+                            Extract Video from Video
+                        </a>
+                    </div>
+                    <div class="d-grid mt-3">
+                        <a href="{{ url_for('receiver_dashboard') }}" class="btn btn-warning">
+                            <i class="fas fa-rocket me-2"></i>Go to Receiver Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Charts -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-chart-bar text-warning"></i> Performance Analytics</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="performanceChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start Guide -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-play-circle text-warning"></i> Quick Start Guide</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center mb-4">
+                                <div class="step-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-key fa-2x"></i>
+                                </div>
+                                <h5>1. Generate Keys</h5>
+                                <p>Create your ECC key pair in the sender or receiver dashboard</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center mb-4">
+                                <div class="step-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-lock fa-2x"></i>
+                                </div>
+                                <h5>2. Encrypt & Hide</h5>
+                                <p>Use sender operations to hide your encrypted data</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center mb-4">
+                                <div class="step-icon bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-unlock fa-2x"></i>
+                                </div>
+                                <h5>3. Extract & Decrypt</h5>
+                                <p>Use receiver operations to retrieve and decrypt data</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize performance chart
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    
+    // Sample data - in real application, this would come from the server
+    const performanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Text in Image', 'Image in Image', 'Video in Video'],
+            datasets: [{
+                label: 'Encryption Time (seconds)',
+                data: [0.45, 1.2, 8.7],
+                backgroundColor: 'rgba(255, 107, 53, 0.8)',
+                borderColor: 'rgba(255, 107, 53, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Decryption Time (seconds)',
+                data: [0.38, 1.1, 7.9],
+                backgroundColor: 'rgba(243, 156, 18, 0.8)',
+                borderColor: 'rgba(243, 156, 18, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Average Operation Times'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Time (seconds)'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+
+<style>
+.step-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+}
+
+.list-group-item {
+    border: none;
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    border-left-color: var(--primary-color);
+    background-color: rgba(255, 107, 53, 0.1);
+}
+</style>
+{% endblock %}

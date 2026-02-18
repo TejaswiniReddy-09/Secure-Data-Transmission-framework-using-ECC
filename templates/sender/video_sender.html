@@ -1,0 +1,225 @@
+{% extends "sender/sender_base.html" %}
+
+{% block sender_title %}Video Steganography - Sender{% endblock %}
+
+{% block sender_content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="dashboard-header text-center mb-4">
+                <h1 class="display-5"><i class="fas fa-video text-warning"></i> Video Steganography</h1>
+                <p class="lead">Hide encrypted videos inside other videos</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-lock text-warning"></i> Video Hiding Form</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="encryptionForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Cover Video</label>
+                                    <input type="file" class="form-control" name="cover_video" accept=".mp4,.avi,.mov,.mkv" required>
+                                    <div class="form-text">The video that will contain the hidden video</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Secret Video</label>
+                                    <input type="file" class="form-control" name="secret_video" accept=".mp4,.avi,.mov,.mkv" required>
+                                    <div class="form-text">The video to hide inside the cover video</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Receiver's Public Key</label>
+                                    <textarea class="form-control" name="receiver_public_key" rows="4" placeholder="Paste receiver's public key here..." required></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Encryption Algorithm</label>
+                                    <select class="form-select" name="algorithm" required>
+                                        <option value="curve25519">Curve25519 (Recommended for video)</option>
+                                        <option value="secp256r1">SECP256R1</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-warning btn-lg">
+                                        <i class="fas fa-shield-alt"></i> Encrypt & Hide Video
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if stego_video %}
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-video text-warning"></i> Cover Video</h5>
+                </div>
+                <div class="card-body text-center">
+                    <video controls class="w-100 rounded" style="max-height: 250px;">
+                        <source src="{{ url_for('uploaded_sender_file', filename=cover_video) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <p class="mt-2 mb-0"><small>Original video</small></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-eye-slash text-warning"></i> Secret Video</h5>
+                </div>
+                <div class="card-body text-center">
+                    <video controls class="w-100 rounded" style="max-height: 250px;">
+                        <source src="{{ url_for('uploaded_sender_file', filename=secret_video) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <p class="mt-2 mb-0"><small>Video to be hidden</small></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-check-circle text-warning"></i> Stego Video</h5>
+                </div>
+                <div class="card-body text-center">
+                    <video controls class="w-100 rounded" style="max-height: 250px;">
+                        <source src="{{ url_for('uploaded_sender_file', filename=stego_video) }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="mt-3">
+                        <p><strong>Encryption Time:</strong> {{ "%.4f"|format(enc_time) }} seconds</p>
+                        <p><strong>Algorithm:</strong> {{ algorithm|upper }}</p>
+                        <a href="{{ url_for('uploaded_sender_file', filename=stego_video) }}" download class="btn btn-outline-warning">
+                            <i class="fas fa-download"></i> Download Stego Video
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Video Requirements -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-info-circle text-warning"></i> Video Requirements & Recommendations</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-check text-success"></i> Recommended</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check-circle text-success me-2"></i> MP4 format with H.264 codec</li>
+                                <li><i class="fas fa-check-circle text-success me-2"></i> Cover video duration ≥ 2× secret video</li>
+                                <li><i class="fas fa-check-circle text-success me-2"></i> 1080p resolution or lower</li>
+                                <li><i class="fas fa-check-circle text-success me-2"></i> File size under 100MB</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-times text-danger"></i> Not Recommended</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-times-circle text-danger me-2"></i> 4K resolution videos</li>
+                                <li><i class="fas fa-times-circle text-danger me-2"></i> Videos longer than 10 minutes</li>
+                                <li><i class="fas fa-times-circle text-danger me-2"></i> Uncompressed formats</li>
+                                <li><i class="fas fa-times-circle text-danger me-2"></i> Encrypted source videos</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Tips -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-tachometer-alt text-warning"></i> Performance Tips</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-compress-alt text-warning fa-2x mb-3"></i>
+                            <h6>Use Compressed Videos</h6>
+                            <p class="small">Compressed videos process faster and have smaller file sizes</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-stopwatch text-warning fa-2x mb-3"></i>
+                            <h6>Shorter Videos</h6>
+                            <p class="small">Keep videos under 5 minutes for optimal performance</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <i class="fas fa-code text-warning fa-2x mb-3"></i>
+                            <h6>Curve25519 Algorithm</h6>
+                            <p class="small">Use Curve25519 for faster video processing</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add file size validation for videos
+document.querySelectorAll('input[type="file"]').forEach(input => {
+    input.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const fileSizeMB = file.size / (1024 * 1024);
+            if (fileSizeMB > 100) {
+                alert('Warning: Large video file selected (' + fileSizeMB.toFixed(2) + ' MB). Processing may take longer and require more system resources.');
+            }
+        }
+    });
+});
+
+// Form validation
+document.getElementById('encryptionForm').addEventListener('submit', function(e) {
+    const coverFile = document.querySelector('input[name="cover_video"]').files[0];
+    const secretFile = document.querySelector('input[name="secret_video"]').files[0];
+    const publicKey = document.querySelector('textarea[name="receiver_public_key"]');
+    
+    if (!publicKey.value.trim()) {
+        e.preventDefault();
+        alert('Please enter the receiver\'s public key.');
+        publicKey.focus();
+        return;
+    }
+    
+    if (coverFile && secretFile) {
+        const coverSizeMB = coverFile.size / (1024 * 1024);
+        const secretSizeMB = secretFile.size / (1024 * 1024);
+        
+        // Check if secret video is significantly larger than cover video
+        if (secretSizeMB > coverSizeMB * 0.8) {
+            if (!confirm('Warning: The secret video appears to be quite large compared to the cover video. This may affect quality and processing time. Continue anyway?')) {
+                e.preventDefault();
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

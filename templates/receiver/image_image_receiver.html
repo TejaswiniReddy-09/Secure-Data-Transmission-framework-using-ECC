@@ -1,0 +1,144 @@
+{% extends "receiver/receiver_base.html" %}
+
+{% block receiver_title %}Extract Image from Image - Receiver{% endblock %}
+
+{% block receiver_content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="dashboard-header text-center mb-4">
+                <h1 class="display-5"><i class="fas fa-image text-success"></i> Extract Image from Image</h1>
+                <p class="lead">Extract and decrypt hidden images from stego images</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-unlock text-success"></i> Image Extraction Form</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="extractionForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Stego Image</label>
+                                    <input type="file" class="form-control" name="stego_image" accept=".png,.jpg,.jpeg,.bmp" required>
+                                    <div class="form-text">Select the image containing hidden image data</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Encryption Algorithm</label>
+                                    <select class="form-select" name="algorithm" required>
+                                        <option value="curve25519">Curve25519</option>
+                                        <option value="secp256r1">SECP256R1</option>
+                                    </select>
+                                    <div class="form-text">Select the algorithm used for encryption</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Your Private Key</label>
+                                    <textarea class="form-control" name="private_key" rows="6" placeholder="Paste your private key here..." required></textarea>
+                                    <div class="form-text">The private key corresponding to the public key used for encryption</div>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="fas fa-unlock"></i> Extract & Decrypt Image
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if extracted_image %}
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-eye-slash text-success"></i> Stego Image</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('uploaded_receiver_file', filename=stego_image) }}" class="img-fluid rounded" style="max-height: 300px;">
+                    <p class="mt-2 mb-0"><small>This image contains a hidden encrypted image</small></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h5><i class="fas fa-image text-success"></i> Extracted Image</h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ url_for('uploaded_receiver_file', filename=extracted_image) }}" class="img-fluid rounded" style="max-height: 300px;">
+                    <div class="mt-3">
+                        <p><strong>Decryption Time:</strong> {{ "%.4f"|format(dec_time) }} seconds</p>
+                        <p><strong>Algorithm:</strong> {{ algorithm|upper }}</p>
+                        <a href="{{ url_for('uploaded_receiver_file', filename=extracted_image) }}" download class="btn btn-outline-success">
+                            <i class="fas fa-download"></i> Download Extracted Image
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Technical Details -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-cogs text-success"></i> Technical Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5><i class="fas fa-microchip text-success"></i> LSB Steganography</h5>
+                            <p>Uses Least Significant Bit modification to hide image data without noticeable quality loss.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5><i class="fas fa-shield-alt text-success"></i> ECC Encryption</h5>
+                            <p>Elliptic Curve Cryptography ensures the hidden image remains secure during transmission.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5><i class="fas fa-compress-alt text-success"></i> Data Compression</h5>
+                            <p>Efficient compression maintains image quality while maximizing hidden data capacity.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Add form validation
+document.getElementById('extractionForm').addEventListener('submit', function(e) {
+    const privateKey = document.querySelector('textarea[name="private_key"]');
+    const fileInput = document.querySelector('input[type="file"]');
+    
+    if (privateKey.value.trim() === '') {
+        e.preventDefault();
+        alert('Please enter your private key.');
+        privateKey.focus();
+        return;
+    }
+    
+    if (fileInput.files.length === 0) {
+        e.preventDefault();
+        alert('Please select a stego image file.');
+        fileInput.focus();
+    }
+});
+</script>
+{% endblock %}

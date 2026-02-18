@@ -1,0 +1,126 @@
+{% extends "receiver/receiver_base.html" %}
+
+{% block receiver_title %}Receiver Dashboard - ECC Steganography{% endblock %}
+
+{% block receiver_content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="dashboard-header text-center mb-5">
+                <h1 class="display-5"><i class="fas fa-download text-success"></i> Receiver Dashboard</h1>
+                <p class="lead">Extract and decrypt hidden data from stego media</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Management Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card custom-card">
+                <div class="card-header">
+                    <h4><i class="fas fa-key text-success"></i> Your Key Management</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Curve selection dropdown -->
+                            <div class="mb-3">
+                                <label class="form-label">Select Algorithm</label>
+                                <select class="form-select" id="eccAlgorithm">
+                                    <option value="curve25519">Curve25519</option>
+                                    <option value="secp256r1">SECP256R1</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Your Private Key</label>
+                                <textarea class="form-control" id="privateKey" rows="4" placeholder="Paste your private key here or generate a new one"></textarea>
+                                <div class="form-text">Keep this key secure and never share it</div>
+                            </div>
+                            <button class="btn btn-success btn-lg" onclick="generateKeys()">
+                                <i class="fas fa-key"></i> Generate New Key Pair
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Your Public Key</label>
+                                <textarea class="form-control" id="publicKey" rows="4" readonly placeholder="Your public key will appear here"></textarea>
+                                <button class="btn btn-outline-success btn-sm mt-2" onclick="copyPublicKey()">
+                                    <i class="fas fa-copy"></i> Copy Public Key
+                                </button>
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Share your public key</strong> with senders so they can encrypt data for you.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Keep the rest of your extraction options, workflow, and security tips here (unchanged) -->
+
+</div>
+
+<script>
+function generateKeys() {
+    const algorithm = document.getElementById('eccAlgorithm').value; // Get selected curve!
+    const button = event.target;
+    const originalText = button.innerHTML;
+
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+    button.disabled = true;
+
+    fetch('/generate_keys', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({algorithm: algorithm})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error: ' + data.error);
+        } else {
+            document.getElementById('publicKey').value = data.public_key;
+            document.getElementById('privateKey').value = data.private_key;
+            alert('Key pair generated successfully!');
+        }
+    })
+    .catch(error => {
+        alert('Error generating keys: ' + error);
+    })
+    .finally(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+function copyPublicKey() {
+    const publicKey = document.getElementById('publicKey');
+    if (publicKey.value.trim() === '') {
+        alert('Please generate a key pair first or paste your public key.');
+        return;
+    }
+    publicKey.select();
+    document.execCommand('copy');
+    alert('Public key copied to clipboard! Share this with senders.');
+}
+</script>
+
+<style>
+.step-number {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 auto 20px;
+}
+</style>
+{% endblock %}
